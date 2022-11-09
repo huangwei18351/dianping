@@ -139,11 +139,8 @@ sleep(sleepTime);
 		// console.log(bound.centerX(), bound.centerY());
 		click(device.width - 200, bound.centerY());
 		sleep(sleepTime);
-
-		do {
-			back();
-			sleep(sleepTime);
-		}while(className("android.widget.TextView").text("免费抽").findOnce() == null);
+		
+		applyFood();
 	}
 // }while(className("android.widget.TextView").text("当前无更多活动，请耐心等待~").findOnce() == null);
 
@@ -152,4 +149,59 @@ function backToFree(){
 		back();
 		sleep(sleepTime);
 	}while(className("android.widget.TextView").text("免费抽").findOnce() == null);
+}
+
+function applyFood(){
+	var apply = text("我要报名").findOnce();
+	if(apply == null){
+		backToFree();
+	}
+	let bound = apply.bounds();
+	click(device.width - 200, bound.centerY());
+	sleep(sleepTime);
+	var confirmApply = text("确认报名").findOnce();
+	if(confirmApply == null){
+		backToFree();
+	}
+
+	var chooseStore = text("请选择分店").findOnce();
+	if(chooseStore != null){
+		bound = chooseStore.bounds();
+		click(bound.centerX(), bound.centerY());
+		sleep(sleepTime);
+
+		var store = textContain("中奖名额").findOne();
+		if(store != null){
+			bound = chooseStore.bounds();
+			click(bound.centerX(), bound.centerY());
+			sleep(sleepTime);
+		}
+	}
+
+	chooseStore = text("请选择分店").findOnce();
+	if(chooseStore != null){
+		bound = chooseStore.bounds();
+		click(bound.centerX(), bound.centerY());
+		sleep(sleepTime);
+
+		var store = textContain("中奖名额").findOne();
+		if(store != null){
+			bound = store.bounds();
+			click(bound.centerX(), bound.centerY());
+			sleep(sleepTime);
+		}
+	}
+	var unJoin = text("未参与").findOnce();
+	if(unJoin != null){
+		bound = unJoin.bounds();
+		click(1000, bound.centerY());
+		sleep(sleepTime);
+	}
+
+	bound = confirmApply.bounds();
+	click(1000, bound.centerY());
+	sleep(sleepTime);
+
+	text("报名成功").waitFor();
+	backToFree();
 }
