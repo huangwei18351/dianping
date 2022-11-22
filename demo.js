@@ -94,29 +94,45 @@ let slideHight = 348 * 5;
 let swipeBtY = 2046;
 let swipeBtX = device.width - 200;
 let swipeToY = swipeBtY - slideHight;
+
+var isFirst =  true;
 do{
 //点击免费抽
 
-	var list = className("android.support.v7.widget.RecyclerView").scrollable(true).depth(13).findOne().children();
-	console.log(list.size());
-	for(var i = 0; i < list.size() - 1; i++){
-		var child = list.get(i);
-		//找到那一栏，说明是上面的，需要跳过
-		if(child.findOne(text("美食")) != null){
-			continue;
+	// var list = className("android.support.v7.widget.RecyclerView").scrollable(true).depth(13).findOne().children();
+	// console.log(list.size());
+	// for(var i = 0; i < list.size() - 1; i++){
+	// 	var child = list.get(i);
+	// 	//找到那一栏，说明是上面的，需要跳过
+	// 	if(child.findOne(text("美食")) != null){
+	// 		continue;
+	// 	}
+	// 	console.log("apply for the " + (num++) + " free of charge meal.");
+	// 	var target = child.findOne(text("免费抽"));
+	// 	if(target != null){
+	// 		let bound = target.bounds();
+	// 		click(device.width - 200, bound.centerY());
+	// 		sleep(sleepTime);
+	// 		applyFood();
+	// 	}
+	// }
+	var freeFreeList = className("android.widget.TextView").text("免费抽").find();
+	for(var i = 0; i < freeFreeList.size() - 1; i++){
+		var free = freeFreeList.get(i);
+		let bound = free.bounds();
+		console.log(bound.centerX());
+		if(isFirst){
+			if(bound.centerX() < 890 || bound.centerX > 998){
+				console.log("continue");
+				continue ;
+			}
+			isFirst = false;
 		}
-		console.log("apply for the " + (num++) + " free of charge meal.");
-		var target = child.findOne(text("免费抽"));
-		if(target != null){
-			let bound = target.bounds();
-			click(device.width - 200, bound.centerY());
-			sleep(sleepTime);
-			applyFood();
-		}
+		sleep(sleepTime);
 	}
 	swipe(swipeBtX, swipeBtY, swipeBtX, swipeToY, 3*sleepTime);
 	sleep(sleepTime);
-}while(className("android.widget.TextView").text("当前无更多活动，请耐心等待~").findOnce() == null);
+}while(className("android.widget.TextView").textContains("当前无更多活动").findOnce() == null);
 
 function backToFree(){
 	do {
