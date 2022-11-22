@@ -8,6 +8,16 @@ auto.waitFor();
 console.show(); //开启日志（悬浮窗权限）
 console.setPosition(0, 100);
 
+threads.start(function(){  //开启子线程
+	//监听音量键-，关闭所有脚本
+	events.observeKey();
+	events.onKeyDown("volume_down",function(event){//音量+改为volume_up
+	  engines.stopAllAndToast();    
+	 });
+ 
+ });
+ 
+
 let sleepTime = 1500;
 sleep(sleepTime);
 app.launchApp("大众点评");
@@ -95,40 +105,21 @@ let swipeBtY = 2046;
 let swipeBtX = device.width - 200;
 let swipeToY = swipeBtY - slideHight;
 
-var isFirst =  true;
 do{
 //点击免费抽
 
-	// var list = className("android.support.v7.widget.RecyclerView").scrollable(true).depth(13).findOne().children();
-	// console.log(list.size());
-	// for(var i = 0; i < list.size() - 1; i++){
-	// 	var child = list.get(i);
-	// 	//找到那一栏，说明是上面的，需要跳过
-	// 	if(child.findOne(text("美食")) != null){
-	// 		continue;
-	// 	}
-	// 	console.log("apply for the " + (num++) + " free of charge meal.");
-	// 	var target = child.findOne(text("免费抽"));
-	// 	if(target != null){
-	// 		let bound = target.bounds();
-	// 		click(device.width - 200, bound.centerY());
-	// 		sleep(sleepTime);
-	// 		applyFood();
-	// 	}
-	// }
 	var freeFreeList = className("android.widget.TextView").text("免费抽").find();
 	for(var i = 0; i < freeFreeList.size() - 1; i++){
+		
 		var free = freeFreeList.get(i);
 		let bound = free.bounds();
-		console.log(bound.centerX());
-		if(isFirst){
-			if(bound.centerX() < 890 || bound.centerX > 998){
-				console.log("continue");
-				continue ;
-			}
-			isFirst = false;
+		if(bound.centerX() < 890 || bound.centerX() > 1000 || bound.centerY() <= 351){
+			continue ;
 		}
+		console.log(bound.centerX(), bound.centerY());
+		click(device.width - 200, bound.centerY());
 		sleep(sleepTime);
+		applyFood();
 	}
 	swipe(swipeBtX, swipeBtY, swipeBtX, swipeToY, 3*sleepTime);
 	sleep(sleepTime);
