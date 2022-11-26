@@ -27,76 +27,8 @@ sleep(sleepTime);
 
 toast("open dianping");
 sleep(sleepTime);
-//back to index page
-while(!id("city_arrow").exists()){
-	back();
-	sleep(sleepTime);
-}
 
-//判断city 是不是上海
-let b ;
-var isShanghai = text("上海").findOnce();
-if(isShanghai == null){
-	if(id("city_arrow").exists()){
-		console.log("click city_arrow");
-		b = id("city_arrow").findOne().bounds();
-		click(b.centerX(), b.centerY());
-		sleep(sleepTime);
-	}
-	var arr = className("android.widget.TextView").text("上海").find();
-	if(arr.empty()){
-		toast("not found");
-		sleep(sleepTime);
-	}else{
-		let i = 1;
-		arr.forEach(function(a){
-			let isClick = a.click();
-			if(isClick){
-				toast("上海" + i + "被点击了");
-			}
-			i++;
-			sleep(sleepTime);
-		});
-	}
-	console.log(b);
-
-	// click(b.centerX(), b.centerY());
-	console.log("choose city shanghai");
-}
-console.log("in shanghai");
-//进入免费试
-var freeTry ;
-id("main_listview").findOne().children().forEach(child => {
-	freeTry = className("android.widget.ImageButton").descContains("免费试").findOne();
-});
-freeTry.click();
-toast("进入免费试");
-sleep(sleepTime);
-
-
-var categories = className("android.widget.TextView").text("全部分类").findOne().parent();
-b = categories.bounds();
-click(b.centerX(), b.centerY());
-sleep(sleepTime);
-
-var food = className("android.widget.TextView").text("美食").findOne().parent();
-b = food.bounds();
-// console.log(device.width - 100);
-click(device.width - 100, b.centerY());
-toast("点击美食");
-sleep(sleepTime);
-
-//筛选
-var selectBtn = className("android.widget.TextView").text("筛选").findOne().parent();
-b = selectBtn.bounds();
-click(b.centerX(), b.centerY());
-sleep(sleepTime);
-
-var notApply = className("android.widget.TextView").text("只看未抢").findOne().parent();
-b = notApply.bounds();
-click(device.width - 100, b.centerY());
-toast("点击只看未抢");
-sleep(sleepTime);
+backToIndex();
 
 let num = 1;
 //翻页，每次翻5个
@@ -105,25 +37,119 @@ let swipeBtY = 2046;
 let swipeBtX = device.width - 200;
 let swipeToY = swipeBtY - slideHight;
 
-do{
-//点击免费抽
+for(var cycle = 0; cycle < 2; cycle ++){
+	//go to free
+	enterIn();
+	clickCat();
+	doWhileForFree();
+	backToIndex();
+}
 
-	var freeFreeList = className("android.widget.TextView").text("免费抽").find();
-	for(var i = 0; i < freeFreeList.size() - 1; i++){
-		
-		var free = freeFreeList.get(i);
-		let bound = free.bounds();
-		if(bound.centerX() < 890 || bound.centerX() > 1000 || bound.centerY() <= 351){
-			continue ;
+console.log("end");
+
+function enterIn(){
+	//判断city 是不是上海
+	let b ;
+	var isShanghai = text("上海").findOnce();
+	if(isShanghai == null){
+		if(id("city_arrow").exists()){
+			console.log("click city_arrow");
+			b = id("city_arrow").findOne().bounds();
+			click(b.centerX(), b.centerY());
+			sleep(sleepTime);
 		}
-		console.log(bound.centerX(), bound.centerY());
-		click(device.width - 200, bound.centerY());
-		sleep(sleepTime);
-		applyFood();
+		var arr = className("android.widget.TextView").text("上海").find();
+		if(arr.empty()){
+			toast("not found");
+			sleep(sleepTime);
+		}else{
+			let i = 1;
+			arr.forEach(function(a){
+				let isClick = a.click();
+				if(isClick){
+					toast("上海" + i + "被点击了");
+				}
+				i++;
+				sleep(sleepTime);
+			});
+		}
+		console.log(b);
+
+		// click(b.centerX(), b.centerY());
+		console.log("choose city shanghai");
 	}
-	swipe(swipeBtX, swipeBtY, swipeBtX, swipeToY, 3*sleepTime);
+	console.log("in shanghai");
+	//进入免费试
+	var freeTry ;
+	id("main_listview").findOne().children().forEach(child => {
+		freeTry = className("android.widget.ImageButton").descContains("免费试").findOne();
+	});
+	freeTry.click();
+	toast("进入免费试");
 	sleep(sleepTime);
-}while(className("android.widget.TextView").textContains("当前无更多活动").findOnce() == null);
+}
+
+function clickCat(){
+	var categories = className("android.widget.TextView").text("全部分类").find();
+	for(var i = 0; i < categories.size(); i++){
+		var cat = categories.get(i);
+		b = cat.bounds();
+		if(b.centerY() < 1000 || b.centerY() > 1500){
+			continue;
+		}
+		click(b.centerX(), b.centerY());
+		sleep(sleepTime);
+	}
+
+	var food = className("android.widget.TextView").text("美食").findOne().parent();
+	b = food.bounds();
+	// console.log(device.width - 100);
+	click(device.width - 100, b.centerY());
+	toast("点击美食");
+	sleep(sleepTime);
+
+	//筛选
+	var selectBtn = className("android.widget.TextView").text("筛选").findOne();
+	b = selectBtn.bounds();
+	click(b.centerX(), b.centerY());
+	sleep(sleepTime);
+
+	var notApply = className("android.widget.TextView").text("只看未抢").findOne().parent();
+	b = notApply.bounds();
+	click(device.width - 100, b.centerY());
+	toast("点击只看未抢");
+	sleep(sleepTime);
+}
+
+function doWhileForFree(){
+	do{
+		//点击免费抽
+		
+			var freeFreeList = className("android.widget.TextView").text("免费抽").find();
+			for(var i = 0; i < freeFreeList.size() - 1; i++){
+				
+				var free = freeFreeList.get(i);
+				let bound = free.bounds();
+				if(bound.centerX() < 890 || bound.centerX() > 1000 || bound.centerY() <= 351){
+					continue ;
+				}
+				console.log(bound.centerX(), bound.centerY());
+				click(device.width - 200, bound.centerY());
+				sleep(sleepTime);
+				applyFood();
+			}
+			swipe(swipeBtX, swipeBtY, swipeBtX, swipeToY, 3*sleepTime);
+			sleep(sleepTime);
+	}while(className("android.widget.TextView").textContains("当前无更多活动").findOnce() == null);
+}
+
+function backToIndex(){
+	//back to index page
+	while(!id("city_arrow").exists()){
+		back();
+		sleep(sleepTime);
+	}
+}
 
 function backToFree(){
 	do {
@@ -141,6 +167,14 @@ function applyFood(){
 	let bound = apply.bounds();
 	click(device.width - 200, bound.centerY());
 	sleep(sleepTime);
+
+	var confirmApply = text("知道啦，继续报名").findOnce();
+	if(confirmApply != null){
+		bound = chooseStore.bounds();
+		click(bound.centerX(), bound.centerY());
+		sleep(sleepTime);
+	}
+
 	var confirmApply = text("确认报名").findOnce();
 	if(confirmApply == null){
 		backToFree();
