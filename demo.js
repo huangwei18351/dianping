@@ -36,6 +36,7 @@ let slideHight = 348 * 5;
 let swipeBtY = 2046;
 let swipeBtX = device.width - 200;
 let swipeToY = swipeBtY - slideHight;
+let b ;
 
 for(var cycle = 0; cycle < 2; cycle ++){
 	//go to free
@@ -49,7 +50,7 @@ console.log("end");
 
 function enterIn(){
 	//判断city 是不是上海
-	let b ;
+	
 	var isShanghai = text("上海").findOnce();
 	if(isShanghai == null){
 		if(id("city_arrow").exists()){
