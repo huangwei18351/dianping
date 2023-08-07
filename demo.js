@@ -110,12 +110,12 @@ function clickCat(){
 	sleep(sleepTime);
 
 	//筛选
-	var selectBtn = className("android.widget.TextView").text("筛选").findOne();
+	var selectBtn = className("android.widget.TextView").text("更多筛选").findOne();
 	b = selectBtn.bounds();
 	click(b.centerX(), b.centerY());
 	sleep(sleepTime);
 
-	var notApply = className("android.widget.TextView").text("只看未抢").findOne().parent();
+	var notApply = className("android.widget.TextView").text("只看未报名").findOne().parent();
 	b = notApply.bounds();
 	click(device.width - 100, b.centerY());
 	toast("点击只看未抢");
