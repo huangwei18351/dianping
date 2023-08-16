@@ -35,5 +35,9 @@ ui.confirmBtn.click(function() {
     if (ui.checkbox2.checked) {
         selectArr[1] = options[1];
     }
+    var storage = storages.create("select");
+    storage.put("selected", selectArr);
 });
+
+
 
