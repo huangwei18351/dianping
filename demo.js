@@ -6,10 +6,11 @@ if (auto.service == null) {
 
 var storage = storages.create("select");
 var selectArr = storage.get("selected");
+
 if(selectArr.length == 0){
     selectArr = new Array(2);
     selectArr[0] = "美食";
-    selectArr[1] = "丽人";
+    selectArr[1] = "美食";
 }
 
 auto.waitFor();
@@ -25,6 +26,9 @@ threads.start(function(){  //开启子线程
  
  });
  
+for(var i = 0; i < selectArr.length; i++){
+	console.log(selectArr[i]);
+}
 
 let sleepTime = 1500;
 sleep(sleepTime);
@@ -40,20 +44,23 @@ backToIndex();
 
 let num = 1;
 //翻页，每次翻5个
-let slideHight = 348 * 5;
+let slideHight = 348 * 4;
 let swipeBtY = 2046;
 let swipeBtX = device.width - 200;
-let swipeToY = swipeBtY - slideHight;
+let swipeToY = swipeBtY - slideHight-200;
 let b ;
 
 for(var i = 0; i < selectArr.length; i++){
     var item = selectArr[i];
-    for(var cycle = 0; cycle < 2; cycle ++){
+    // console.log(item);
+    if(item!=null){
+    for(var cycle = 0; cycle < 4; cycle ++){
         //go to free
         enterIn();
         clickCat(item);
         doWhileForFree();
         backToIndex();
+    }
     }
 }
 
@@ -102,7 +109,8 @@ function enterIn(){
 	sleep(sleepTime);
 }
 
-function clickCat(item){
+function clickCat(type){
+    console.log(type);
 	var categories = className("android.widget.TextView").text("全部分类").find();
 	for(var i = 0; i < categories.size(); i++){
 		var cat = categories.get(i);
@@ -114,7 +122,7 @@ function clickCat(item){
 		sleep(sleepTime);
 	}
 
-	var food = className("android.widget.TextView").text(item).findOne().parent();
+	var food = className("android.widget.TextView").text(type).findOne().parent();
 	b = food.bounds();
 	// console.log(device.width - 100);
 	click(device.width - 100, b.centerY());
@@ -147,13 +155,14 @@ function doWhileForFree(){
 					continue ;
 				}
 				console.log(bound.centerX(), bound.centerY());
-				click(device.width - 200, bound.centerY());
+				var random = randomPosition(bound.top, bound.bottom, bound.left-100, bound.right-100);
+				click(random[0], random[1]);
 				sleep(sleepTime);
 				applyFood();
 			}
 			swipe(swipeBtX, swipeBtY, swipeBtX, swipeToY, 3*sleepTime);
 			sleep(sleepTime);
-	}while(className("android.widget.TextView").textContains("当前无更多活动").findOnce() == null);
+	}while(className("android.widget.TextView").textContains("暂无更多活动").findOnce() == null);
 }
 
 function backToIndex(){
@@ -178,7 +187,8 @@ function applyFood(){
 		return;
 	}
 	let bound = apply.bounds();
-	click(device.width - 200, bound.centerY());
+	var random = randomPosition(bound.top, bound.bottom, bound.left, bound.right);
+	click(random[0], random[1]);
 	sleep(sleepTime);
 
 	var confirmApply = text("知道啦，继续报名").findOnce();
@@ -232,9 +242,21 @@ function applyFood(){
 	}
 
 	bound = confirmApply.bounds();
-	click(1000, bound.centerY());
+	var random = randomPosition(bound.top, bound.bottom, bound.left, bound.right);
+	click(random[0], random[1]);
 	sleep(sleepTime);
 
 	text("报名成功").waitFor();
 	backToFree();
 }
+
+
+function randomPosition(top, bottom, left, right){
+	var randomX = random(left, right); // 生成[x1, x2)范围内的随机整数  
+	var randomY = random(top, bottom); // 生成[y1, y2)范围内的随机整数  
+	  
+	// 输出随机点  
+	console.log("Random point in rectangle: (" + randomX + ", " + randomY + ")");
+	return [randomX, randomY];
+}
+
